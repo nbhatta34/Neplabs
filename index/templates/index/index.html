@@ -1,12 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>This is on test</h1>
-</body>
-</html>
+{% extends 'frontendLayout.html' %}
+{% block title %}
+<title>Neplabs</title>
+{% endblock%}
+
+{% block content %}
+<div class="container-fluid p-5" id="container-1">
+    <div class="row">
+        <div class="container col-md-6 mb-5" id="container-2">
+            <img src="static/images/home.png" id="home-image" alt="">
+        </div>
+        <div class="container col-md-4 mb-5" id="container-3">
+            <div class="container p-3" id="container-4">
+                <h1 class="text-center mb-5">User Login</h1>
+                <div class="input-group mb-5">
+                    <input type="text" class="form-control" placeholder="Username" aria-label="Username" id="text">
+                </div>
+                <div class="input-group mb-5">
+                    <input type="text" class="form-control" placeholder="Password" aria-label="Username" id="text">
+                </div>
+                <div class="input-group mb-3" id="input-group">
+                    <div class="radio-button">
+                        <input type="radio" id="radio">
+                        <h6>Show Password</h6>
+                    </div>
+                    <a href="#" id="forgot">
+                        <h6>Forgot?</h6>
+                    </a>
+                </div>
+                <a href="/userDash">
+                    <button class="btn btn-success mb-5">Log In</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid bg-primary" id="container-5">
+    <div class="row">
+        <div class="container col-md-6 mb-5 mt-4">
+            <img src="static/images/heart.png" id="service-image" alt="">
+        </div>
+        <div class="container col-md-5 mt-5 mb-5">
+            <div class="container" id="container-6">
+                <h1 class="text-center mb-5 mt-5">About Neplabs</h1>
+                <p>NEPLABS is an innovative integrated health
+                    care platform to deliver health delivery system
+                    that touches multiple channels to target the right
+                    patients at the right time and in the right way.
+                    NEPLABS web application is launched
+                    to facilitate better care for patients by providing them
+                    digital health care portal. </p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid p-5" id="container-7">
+    <div class="row">
+        <div class="container col-md-3">
+            <h1 class="text-center">Neplabs</h1>
+        </div>
+        <div class="container col-md-3" id="container-8">
+            <span><i class="las la-globe"></i>
+                <p>wwww.neplabs.com</p>
+            </span>
+            <span><i class="las la-phone-volume"></i>
+                <p>+977 9810101010</p>
+            </span>
+            <span><i class="las la-copyright"></i>
+                <p>Copyright Neplabs 2021. All rights reserved.</p>
+            </span>
+        </div>
+        <div class="container col-md-3">
+            <span><i class="las la-envelope"></i>
+                <p>neplabs@gmail.com</p>
+            </span>
+        </div>
+    </div>
+</div>
+{% endblock %}
