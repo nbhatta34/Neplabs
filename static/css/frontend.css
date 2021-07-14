@@ -172,6 +172,32 @@ span{
     display: flex;
 }
 
+.d-flex .btn:nth-of-type(1){
+    width: 170px;
+    height: 40px;
+    border-radius: 19px;
+    line-height: 25px;
+}
+
+.d-flex .btn:nth-of-type(2){
+    width: 170px;
+    height: 40px;
+    border-radius: 19px;
+    line-height: 25px;
+}
+
+.d-flex .btn:nth-of-type(1):hover{
+    border: 1px solid green;
+    background-color: #fff;
+    color: green;
+    transition: 0.2s ease-in;
+} 
+.d-flex .btn:nth-of-type(2):hover{
+    border: 1px solid yello;
+    background-color: #fff;
+    color: #000;
+    transition: 0.2s ease-in;
+} 
 
 /* User Dashboard */
 #user-dasboard{
