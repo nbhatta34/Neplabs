@@ -1,0 +1,40 @@
+{% extends 'frontendLayout.html' %}
+{% block title %}
+<title>Neplabs</title>
+{% endblock%}
+
+{% block content %}
+<div class="container mt-4 p-2 text-center" id="doc-title">
+    <h2>Add Document</h2>
+</div>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card py-4 px-4">
+                <form class="form" action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="document_type">Document Type</label>
+                        <select name="document_type" id="document_type" class="form-select">
+                            <option>Choose..</option>
+                            <option>Lab Result</option>
+                            <option>Prescription</option>
+                            <option>Diagnostics</option>
+                        </select>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="file">Upload</label>
+                        <input type="file" class="form-control" id="upload" name="upload" aria-describedby="upload">
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="title">Description</label>
+                        <input type="text" class="form-control" id="description" name="description"
+                            aria-describedby="description" placeholder="Enter description">
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

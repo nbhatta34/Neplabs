@@ -55,3 +55,9 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.username
+
+class Document(models.Model):
+    document_type = models.CharField(max_length=100)
+    upload = models.FileField(upload_to='uploads')
+    created_date = models.DateTimeField(auto_now_add=True)
+    description = models.CharField(max_length=200)

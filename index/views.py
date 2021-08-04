@@ -11,6 +11,10 @@ from django.conf import settings
 from django.core.mail import send_mail
 from .models import Profile
 from django.contrib.auth import get_user_model
+from .models import Document
+from django.http import HttpResponse, response
+import mimetypes
+import os
 User = get_user_model()
 
 
@@ -22,12 +26,13 @@ def index_page(request):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
 
-            user_obj = User.objects.filter(email = email).first()
+            user_obj = User.objects.filter(email=email).first()
 
-            profile_obj = Profile.objects.filter(user = user_obj).first()
+            profile_obj = Profile.objects.filter(user=user_obj).first()
 
             if not profile_obj.is_verified:
-                messages.warning(request, 'Account is not verified. Please check your email.')
+                messages.warning(
+                    request, 'Account is not verified. Please check your email.')
                 return redirect('/')
 
             user = authenticate(request, email=email, password=password)
@@ -60,7 +65,8 @@ def user_sign_up(request):
             us_id = user.id
             user_id = User.objects.get(id=us_id)
             auth_token = str(uuid.uuid4())
-            profile_obj = Profile.objects.create(user = user_id , auth_token = auth_token)
+            profile_obj = Profile.objects.create(
+                user=user_id, auth_token=auth_token)
             profile_obj.save()
             send_mail_after_registration(email, auth_token)
             return redirect('/token')
@@ -98,14 +104,43 @@ def verify(request, auth_token):
 
         if profile_obj:
             if profile_obj.is_verified:
-                messages.info(request, 'Your account is already been verified.')
+                messages.info(
+                    request, 'Your account is already been verified.')
                 return redirect('/')
             profile_obj.is_verified = True
             profile_obj.save()
-            messages.success(request, 'Congratulations your account has been verified.')
+            messages.success(
+                request, 'Congratulations your account has been verified.')
             return redirect('/')
         else:
             return redirect('/error')
     except Exception as e:
         print(e)
         return redirect('/')
+
+
+def documents(request):
+    documents = Document.objects.all()
+    context = {
+        'documents': documents,
+
+    }
+    return render(request, 'index/documents.html', context)
+
+
+def add_documents(request):
+    if request.method == 'POST':
+        document_type = request.POST.get('document_type')
+        description = request.POST.get('description')
+        upload = request.FILES.get('upload')
+        file_obj = Document(document_type=document_type,
+                            upload=upload, description=description)
+        file_obj.save()
+        if file_obj:
+            return redirect('/documents')
+        else:
+            return HttpResponse("File cannot be added")
+    context = {
+
+    }
+    return render(request, 'index/addDocuments.html', context)

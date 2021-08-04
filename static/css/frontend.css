@@ -209,3 +209,31 @@ span{
     border-radius: 15px;
     box-shadow: 1px 1px 5px #c9c9c9;
 }
+
+#doc-title{
+    border-radius: 5px;
+    background-color: #c9c9c9;
+}
+
+#add-doc{
+    border-radius: 5px;
+}
+
+#add-doc:hover{
+    background-color: rgb(155, 155, 255);
+    border: 1px solid rgb(155, 155, 255);
+    color: blue;
+}
+
+#doc-title h2{
+    font-weight: 300;
+    color: #4d4c4c;
+}
+
+#user-dasboard a{
+    text-decoration: none;
+}
+
+#document-view i{
+    font-size: 19px;
+}

@@ -1,0 +1,49 @@
+{% extends 'frontendLayout.html' %}
+{% block title %}
+<title>Neplabs</title>
+{% endblock%}
+
+{% block content %}
+<div class="container mt-4 p-2 d-flex justify-content-between" id="doc-title">
+    <h2>Documents</h2>
+    <a href="/addDocuments" class="btn btn-primary" id="add-doc">Add Document</a>
+
+</div>
+<div class="container mt-3" id="document-view">
+    <div class="card py-2 px-2">
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Document Type</th>
+                    <th>File</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            {% for document in documents %}
+            <tbody>
+                <tr>
+                    <td> {{ document.document_type }}</td>
+                    <td> <img src="uploads/{{document.upload}}" alt="file_image" width="50" height="50" style="border-radius: 50%;"> {{ document.upload }}</td>
+                    <td> {{ document.description }}</td>
+                    <td><button type="button" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom"
+                            title="Edit">
+                            <i class="las la-edit"></i>
+                        </button>
+                        <a href="{{document.upload.url}}" download="{{document.upload.url}}" class="btn btn-info" data-toggle="tooltip" data-placement="bottom"
+                            title="Download"><i class="las la-file-download"></i></a>
+                        <a href="#" class="btn btn-danger"
+                            onclick="return confirm('Are you sure want to delete this file?')" data-toggle="tooltip"
+                            data-placement="bottom" title="Delete"><i class="las la-trash-alt"></i></a>
+                    </td>
+                </tr>
+            </tbody>
+            {% endfor %}
+
+        </table>
+    </div>
+</div>
+
+
+
+{% endblock %}
