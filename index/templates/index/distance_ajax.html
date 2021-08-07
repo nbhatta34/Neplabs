@@ -1,0 +1,93 @@
+{% extends 'frontendLayout.html' %}
+{% block title %}
+<title>Neplabs</title>
+{% endblock%}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div id="wrapper" class="container border border-info rounded py-2">
+                <button id="location-button" class="btn btn-primary d-inline">Get Your Current Location</button>
+                <h5 id="latitude" style="font-weight: 300;" class="text-center d-inline mx-3"></h5>
+                <h5 id="longitude" style="font-weight: 300;" class="text-center d-inline mx-3"></h5>
+                <h6 class="mt-2 text-success" style="font-weight: 300;">Copy and paste the latitude and longitude in the
+                    entry fields below respectively to get nearby vaccination location (Nearby Location Radius = under 5 KM).</h6>
+            </div>
+            <script>
+                $('#location-button').click(function () {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(function (position) {
+                            var latitude = position.coords.latitude
+                            var longitude = position.coords.longitude
+                            console.log(position)
+                            $('#latitude').html(latitude);
+                            $('#longitude').html(longitude);
+                        });
+                    }
+                });
+
+                $(document).on('submit', '#post-form', function(e){
+                    e.preventDefault();
+                    lat1 = $('#lat1').val()
+                    lon1 = $('#lon1').val()
+                
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url "distance_ajax" %}',
+                        data: {
+                            'lat1': lat1,
+                            'lon1': lon1,
+                            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken').val()
+                            
+                        },
+                        success: function(response){
+                            console.log(response)
+                            dist = response.data
+                            len = dist.length
+                            console.log(dist)
+                            for(i=0; i<len; i++){
+                                $('#data_table tbody').append(
+                                    `
+                                    <tr>
+                                        <td>${dist[i]}</td>
+                                    </tr>
+                                    `
+                                    )
+                            }
+                        }
+                    })
+                
+                })
+            </script>
+            <form class="form" action="" id="post-form" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group mt-3">
+                    <label for="lat1">Latitude</label>
+                    <input type="text" class="form-control" id="lat1" name="lat1" aria-describedby="lat1"
+                        placeholder="Enter Latitude" required>
+                </div>
+                <div class="form-group mt-3">
+                    <label for="lon1">Longitude</label>
+                    <input type="text" class="form-control" id="lon1" name="lon1" aria-describedby="lon1"
+                        placeholder="Enter Longitude" required>
+                </div>
+                <button type="submit" class="btn btn-primary mt-4">Calculate Distance</button>
+            </form>
+        </div>
+    </div>
+    <div class="container  mt-4">
+        <div class="row d-flex justify-content-center">
+            <table class="table" id="data_table">
+                <tbody>
+                    {% for distance in nearby_distance %}
+                    <tr>
+                        <td>{{distance}} KM</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

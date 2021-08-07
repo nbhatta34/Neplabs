@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from . import models
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from . forms import UserAdminChangeForm, UserAdminCreationForm
+from .models import Search
 # Register your models here.
 # admin.site.site_header = "Neplabs Admin Portal"
 
@@ -21,3 +22,5 @@ class UserAdmin(BaseUserAdmin):
     )
 
 admin.site.register(User, UserAdmin)
+
+admin.site.register(Search)

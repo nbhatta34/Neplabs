@@ -22,4 +22,7 @@ urlpatterns = [
         template_name="index/password_reset_form.html"), name="password_reset_confirm"),
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(
         template_name="index/password_reset_done.html"), name="password_reset_complete"),
+    path('distanceCalculator', views.vaccine_booking),
+    path('distance_ajax', views.distance_ajax, name='distance_ajax'),
+    path('vaccineBooking', views.distance_calculator, name='create_post'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

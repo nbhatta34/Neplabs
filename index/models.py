@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.contrib.auth.models import User
+# from django.contrib.gis.db import models
 # Create your models here.
 
 
@@ -61,3 +62,13 @@ class Document(models.Model):
     upload = models.FileField(upload_to='uploads')
     created_date = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=200)
+
+
+class Search(models.Model):
+    address = models.CharField(max_length=200, null=True)
+    date = models.DateTimeField(auto_now_add=True)
+    latitude = models.CharField(max_length=20, null=True)
+    longitude = models.CharField(max_length=20, null=True)
+
+    def __str__(self):
+        return self.address

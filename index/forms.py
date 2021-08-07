@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.forms import fields, models
 from django.forms.widgets import PasswordInput, TextInput
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from .models import Search
 
 User = get_user_model()
 
@@ -44,3 +45,12 @@ class LoginForm(forms.Form):
     email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput)
 
+
+
+
+class SearchForm(forms.ModelForm):
+    address = forms.CharField(label='')
+
+    class Meta:
+        model = Search
+        fields = ['address', ]

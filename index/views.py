@@ -4,17 +4,18 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import LoginForm, UserAdminCreationForm
+from numpy import add
+from .forms import LoginForm, UserAdminCreationForm, SearchForm
 from .auth import unauthenticated_user
 import uuid
 from django.conf import settings
 from django.core.mail import send_mail
 from .models import Profile
 from django.contrib.auth import get_user_model
-from .models import Document
+from .models import Document, Search
 from django.http import HttpResponse, response
-import mimetypes
-import os
+from math import cos, asin, sqrt, pi
+
 User = get_user_model()
 
 
@@ -140,7 +141,95 @@ def add_documents(request):
             return redirect('/documents')
         else:
             return HttpResponse("File cannot be added")
-    context = {
+    context = {}
 
-    }
     return render(request, 'index/addDocuments.html', context)
+
+
+def vaccine_booking(request):
+    context = {}
+    return render(request, 'index/vaccineBooking.html', context)
+
+
+def distance_calculator(request):
+    format_distance = 0
+    nearby_distance = ['Distance in']
+    nearby_address = ['Address']
+
+    if request.method == 'POST':
+        lat1 = request.POST.get('lat1')
+        lon1 = request.POST.get('lon1')
+
+        db_lat_lon = Search.objects.values_list(
+            'latitude', 'longitude', 'address')
+
+        nearby_distance = []
+        nearby_address = []
+
+        for lat_lon in db_lat_lon:
+            if not lat_lon[0] == None and not lat_lon[1] == None:
+                if not lat_lon[2] in nearby_address:
+                    latitude = float(lat_lon[0])
+                    longitude = float(lat_lon[1])
+                    address = lat_lon[2]
+                    p = pi / 180
+                    a = 0.5 - cos((latitude - float(lat1)) * p) / 2 + cos(float(lat1) * p) * \
+                        cos(latitude * p) * \
+                        (1 - cos((longitude - float(lon1)) * p)) / 2
+                    distance = 12742 * asin(sqrt(a))
+                    format_distance = "{:.2f}".format(distance)
+                    if float(format_distance) < 30:
+                        nearby_distance.append(format_distance)
+                        nearby_address.append(address)
+
+    context = {
+        'distance': format_distance,
+        'nearby_distance': nearby_distance,
+        'nearby_address': nearby_address,
+    }
+
+    return render(request, 'index/distance_calculator.html', context)
+
+
+def distance_ajax(request):
+
+    format_distance = 0
+    nearby_distance = ['Distance in']
+    nearby_address = ['Address']
+
+    if request.method == 'POST':
+        lat1 = request.POST.get('lat1')
+        lon1 = request.POST.get('lon1')
+        print(lat1, lon1, "Hello")
+
+
+        db_lat_lon = Search.objects.values_list(
+            'latitude', 'longitude', 'address')
+
+        nearby_distance = []
+        nearby_address = []
+
+        for lat_lon in db_lat_lon:
+            if not lat_lon[0] == None and not lat_lon[1] == None:
+                if not lat_lon[2] in nearby_address:
+                    latitude = float(lat_lon[0])
+                    longitude = float(lat_lon[1])
+                    address = lat_lon[2]
+                    p = pi / 180
+                    a = 0.5 - cos((latitude - float(lat1)) * p) / 2 + cos(float(lat1) * p) * \
+                        cos(latitude * p) * \
+                        (1 - cos((longitude - float(lon1)) * p)) / 2
+                    distance = 12742 * asin(sqrt(a))
+                    format_distance = "{:.2f}".format(distance)
+                    if float(format_distance) < 5:
+                        nearby_distance.append(format_distance)
+                        nearby_address.append(address)
+        return response.JsonResponse({"status":"Data Fetched Successfully","data":nearby_distance})
+    
+    context = {
+        'distance': format_distance,
+        'nearby_distance': nearby_distance,
+        'nearby_address': nearby_address,
+    }
+
+    return render(request, 'index/distance_ajax.html', context)
