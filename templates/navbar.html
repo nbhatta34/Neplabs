@@ -29,11 +29,15 @@
                         <a class="nav-link" aria-current="page" href="/userDash"><i style="display:inline; "
                                 class="las la-home"></i>Home</a>
                     </li>
-
                     {% if user.is_authenticated %}
+                    
                     <li class="nav-item}">
                         <a class="nav-link {{activate_logout}" id="logout" aria-current="page" href="/logout"><i
                                 class="las la-sign-out-alt"></i>Logout</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled text-warning" aria-current="page" href="/userDash"><i style="display:inline; "
+                            class="las la-user"></i>{{username}}</a>
                     </li>
                     {% else %}
                     <li class="nav-item">

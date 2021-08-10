@@ -13,9 +13,10 @@ from django.core.mail import send_mail
 from .models import Profile
 from django.contrib.auth import get_user_model
 from .models import Document, Search
-from django.http import HttpResponse, response
+from django.http import HttpResponse, response, JsonResponse
 from math import cos, asin, sqrt, pi
-
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 User = get_user_model()
 
 
@@ -52,8 +53,12 @@ def index_page(request):
     return render(request, 'index/index.html', context)
 
 
+@login_required
 def user_dashboard(request):
-    context = {}
+    username = request.user.username
+    context = {
+        'username': username
+    }
     return render(request, 'index/userDash.html', context)
 
 
@@ -120,91 +125,71 @@ def verify(request, auth_token):
         return redirect('/')
 
 
-def documents(request):
-    documents = Document.objects.all()
-    context = {
-        'documents': documents,
-
-    }
-    return render(request, 'index/documents.html', context)
-
-
+@csrf_exempt
+@login_required
 def add_documents(request):
+    username = request.user.username
+    documents = Document.objects.all()
     if request.method == 'POST':
         document_type = request.POST.get('document_type')
         description = request.POST.get('description')
-        upload = request.FILES.get('upload')
+        upload = request.FILES.get('file')
+
         file_obj = Document(document_type=document_type,
                             upload=upload, description=description)
         file_obj.save()
+
         if file_obj:
-            return redirect('/documents')
+            file = Document.objects.values().all()
+            list_file = list(file)
+            return JsonResponse({'data': list_file})
+
         else:
             return HttpResponse("File cannot be added")
-    context = {}
 
-    return render(request, 'index/addDocuments.html', context)
+    context = {
+        'username': username,
+        'documents': documents,
+    }
+
+    return render(request, 'index/documents.html', context)
 
 
+@login_required
+def delete_document(request):
+    id1 = request.GET.get('id', None)
+    Document.objects.get(id=id1).delete()
+    data = {
+        'deleted': True
+    }
+    return JsonResponse(data)
+
+
+@login_required
 def vaccine_booking(request):
-    context = {}
+    username = request.user.username
+    context = {
+        'username': username
+    }
     return render(request, 'index/vaccineBooking.html', context)
 
 
-def distance_calculator(request):
-    format_distance = 0
-    nearby_distance = ['Distance in']
-    nearby_address = ['Address']
-
-    if request.method == 'POST':
-        lat1 = request.POST.get('lat1')
-        lon1 = request.POST.get('lon1')
-
-        db_lat_lon = Search.objects.values_list(
-            'latitude', 'longitude', 'address')
-
-        nearby_distance = []
-        nearby_address = []
-
-        for lat_lon in db_lat_lon:
-            if not lat_lon[0] == None and not lat_lon[1] == None:
-                if not lat_lon[2] in nearby_address:
-                    latitude = float(lat_lon[0])
-                    longitude = float(lat_lon[1])
-                    address = lat_lon[2]
-                    p = pi / 180
-                    a = 0.5 - cos((latitude - float(lat1)) * p) / 2 + cos(float(lat1) * p) * \
-                        cos(latitude * p) * \
-                        (1 - cos((longitude - float(lon1)) * p)) / 2
-                    distance = 12742 * asin(sqrt(a))
-                    format_distance = "{:.2f}".format(distance)
-                    if float(format_distance) < 30:
-                        nearby_distance.append(format_distance)
-                        nearby_address.append(address)
-
-    context = {
-        'distance': format_distance,
-        'nearby_distance': nearby_distance,
-        'nearby_address': nearby_address,
-    }
-
-    return render(request, 'index/distance_calculator.html', context)
-
-
+@login_required
 def distance_ajax(request):
-
+    username = request.user.username
     format_distance = 0
-    nearby_distance = ['Distance in']
-    nearby_address = ['Address']
+    nearby_distance = []
+    nearby_address = []
 
     if request.method == 'POST':
         lat1 = request.POST.get('lat1')
         lon1 = request.POST.get('lon1')
-        print(lat1, lon1, "Hello")
-
 
         db_lat_lon = Search.objects.values_list(
-            'latitude', 'longitude', 'address')
+            'latitude',
+            'longitude',
+            'address'
+        )
 
         nearby_distance = []
         nearby_address = []
@@ -221,15 +206,18 @@ def distance_ajax(request):
                         (1 - cos((longitude - float(lon1)) * p)) / 2
                     distance = 12742 * asin(sqrt(a))
                     format_distance = "{:.2f}".format(distance)
-                    if float(format_distance) < 5:
+
+                    if float(format_distance) < 20:
                         nearby_distance.append(format_distance)
                         nearby_address.append(address)
-        return response.JsonResponse({"status":"Data Fetched Successfully","data":nearby_distance})
-    
+
+        return response.JsonResponse({"data": nearby_distance, "data1": nearby_address})
+
     context = {
         'distance': format_distance,
         'nearby_distance': nearby_distance,
         'nearby_address': nearby_address,
+        'username': username
     }
 
     return render(request, 'index/distance_ajax.html', context)

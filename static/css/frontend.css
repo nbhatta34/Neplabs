@@ -237,3 +237,35 @@ span{
 #document-view i{
     font-size: 19px;
 }
+
+/* Popup Add document Form */
+
+#main-container{
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+
+#sub-container{
+    width: 60%;
+    height: 340px;
+    background-color: white;
+    border-radius: 10px;
+    position: relative;
+}
+
+#close{
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    font-size: 40px;
+    cursor: pointer;
+    transform: rotate(45deg);
+    color: red;
+}

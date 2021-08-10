@@ -12,7 +12,8 @@
                 <h5 id="latitude" style="font-weight: 300;" class="text-center d-inline mx-3"></h5>
                 <h5 id="longitude" style="font-weight: 300;" class="text-center d-inline mx-3"></h5>
                 <h6 class="mt-2 text-success" style="font-weight: 300;">Copy and paste the latitude and longitude in the
-                    entry fields below respectively to get nearby vaccination location (Nearby Location Radius = under 5 KM).</h6>
+                    entry fields below respectively to get nearby vaccination location (Nearby Location Radius = under 5
+                    KM).</h6>
             </div>
             <script>
                 $('#location-button').click(function () {
@@ -20,18 +21,17 @@
                         navigator.geolocation.getCurrentPosition(function (position) {
                             var latitude = position.coords.latitude
                             var longitude = position.coords.longitude
-                            console.log(position)
                             $('#latitude').html(latitude);
                             $('#longitude').html(longitude);
                         });
                     }
                 });
 
-                $(document).on('submit', '#post-form', function(e){
+                $(document).on('submit', '#post-form', function (e) {
                     e.preventDefault();
                     lat1 = $('#lat1').val()
                     lon1 = $('#lon1').val()
-                
+
                     $.ajax({
                         type: 'POST',
                         url: '{% url "distance_ajax" %}',
@@ -39,25 +39,26 @@
                             'lat1': lat1,
                             'lon1': lon1,
                             csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken').val()
-                            
+
                         },
-                        success: function(response){
-                            console.log(response)
+                        success: function (response) {
                             dist = response.data
+                            address = response.data1
                             len = dist.length
-                            console.log(dist)
-                            for(i=0; i<len; i++){
+
+                            for (i = 0; i < len; i++) {
                                 $('#data_table tbody').append(
                                     `
                                     <tr>
+                                        <td>${address[i]} KM</td>
+                        
                                         <td>${dist[i]}</td>
                                     </tr>
                                     `
-                                    )
+                                )
                             }
                         }
                     })
-                
                 })
             </script>
             <form class="form" action="" id="post-form" method="POST" enctype="multipart/form-data">
@@ -77,16 +78,23 @@
         </div>
     </div>
     <div class="container  mt-4">
-        <div class="row d-flex justify-content-center">
-            <table class="table" id="data_table">
-                <tbody>
-                    {% for distance in nearby_distance %}
-                    <tr>
-                        <td>{{distance}} KM</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <table class="table table-bordered table-striped text-center" id="data_table">
+                    <colgroup>
+                        <col style="width: 50%" />
+                        <col style="width: 50%" />
+                    </colgroup>
+                    <thead>
+                        <th>Hospital</th>
+                        <th>Distance in KM</th>
+                    </thead>
+                    
+                    <tbody>
+                    
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

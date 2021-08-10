@@ -6,12 +6,12 @@
 {% block content %}
 <div class="container mt-4 p-2 d-flex justify-content-between" id="doc-title">
     <h2>Documents</h2>
-    <a href="/addDocuments" class="btn btn-primary" id="add-doc">Add Document</a>
+    <button id="add-doc" class="btn btn-primary">Add Document</button>
 
 </div>
 <div class="container mt-3" id="document-view">
     <div class="card py-2 px-2">
-        <table class="table">
+        <table class="table table-bordered table-striped" id="doc-table">
             <thead class="thead-dark">
                 <tr>
                     <th>Document Type</th>
@@ -20,30 +20,152 @@
                     <th>Actions</th>
                 </tr>
             </thead>
-            {% for document in documents %}
+
             <tbody>
-                <tr>
+                {% for document in documents %}
+                <tr id="document-{{document.id}}">
                     <td> {{ document.document_type }}</td>
-                    <td> <img src="uploads/{{document.upload}}" alt="file_image" width="50" height="50" style="border-radius: 50%;"> {{ document.upload }}</td>
+                    <td> <img src="uploads/{{document.upload}}" alt="file_image" width="50" height="50"
+                            style="border-radius: 50%;"> {{ document.upload }}</td>
                     <td> {{ document.description }}</td>
                     <td><button type="button" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom"
                             title="Edit">
                             <i class="las la-edit"></i>
                         </button>
-                        <a href="{{document.upload.url}}" download="{{document.upload.url}}" class="btn btn-info" data-toggle="tooltip" data-placement="bottom"
-                            title="Download"><i class="las la-file-download"></i></a>
-                        <a href="#" class="btn btn-danger"
-                            onclick="return confirm('Are you sure want to delete this file?')" data-toggle="tooltip"
-                            data-placement="bottom" title="Delete"><i class="las la-trash-alt"></i></a>
+                        <a href="{{document.upload.url}}" download="{{document.upload.url}}" class="btn btn-info"
+                            data-toggle="tooltip" data-placement="bottom" title="Download"><i
+                                class="las la-file-download"></i></a>
+                        <button class="btn btn-danger" id="delete" onClick="deleteUser('{{document.id}}')"
+                            data-toggle="tooltip" data-placement="bottom" title="Delete"><i
+                                class="las la-trash-alt"></i></button>
                     </td>
                 </tr>
+                {% endfor %}
             </tbody>
-            {% endfor %}
+
 
         </table>
     </div>
 </div>
+<div class="container-fluid" id="main-container">
+    <div class="container" id="sub-container">
+        <div id="close">+</div>
+        <div class="row">
+            <div class="col-md-8 offset-md-2 py-4">
+                <div id="card-doc">
+                    <form class="form" action="" id="doc-form" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="document_type">Document Type</label>
+                            <select name="document_type" id="document_type" class="form-select">
+                                <option>Choose..</option>
+                                <option>Lab Result</option>
+                                <option>Prescription</option>
+                                <option>Diagnostics</option>
+                            </select>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="file">Upload</label>
+                            <input type="file" class="form-control" id="file" name="file" aria-describedby="upload">
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="title">Description</label>
+                            <textarea type="text" class="form-control" id="description" name="description"
+                                aria-describedby="description" placeholder="Enter description"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<script type="text/javascript">
+    document.getElementById('add-doc').addEventListener('click', function () {
+        document.querySelector('#main-container').style.display = 'flex'
+    })
+
+    document.querySelector('#close').addEventListener('click', function () {
+        document.querySelector('#main-container').style.display = 'none'
+    })
+
+    function deleteUser(id) {
+        var action = confirm("Are you sure want to delete this file?");
+        if (action != false) {
+            $.ajax({
+                url: '{% url "delete_document" %}',
+                data: {
+                    'id': id,
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if (data.deleted) {
+                        $("#doc-table #document-" + id).remove();
+                    }
+                }
+            });
+        }
+    }
+
+    $(document).on('submit', '#doc-form', function (e) {
+        e.preventDefault();
+        document_type = $('#document_type').val()
+        description = $('#description').val()
+        var fd = new FormData();
+        fd.append('file', $("input[id^='file']")[0].files[0]);
+        fd.append('document_type', document_type)
+        fd.append('description', description)
+        fd.append('csrfmidlewaretoken', $("input[name=csrfmiddlewaretoken]").val())
+        for (var key of fd.entries()) {
+            console.log(key[0] + ', ' + key[1]);
+        }
+
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "add_document" %}',
+            processData: false,
+            contentType: false,
+            data: fd,
+
+            success: function (response) {
+                document.querySelector('#main-container').style.display = 'none'
+                $('#description').val('');
+                $('#document_type').prop('selectedIndex', 0);
+                $("#file").val(null);
+                data = response.data
+                console.log(data)
+                $('#doc-table tbody').empty()
+                for (i = 0; i < data.length; i++) {
+                    $('#doc-table tbody').append(
+                        `
+                    <tr>
+                        <td>${data[i].document_type}</td>
+                        <td> <img src="uploads/${data[i].upload}" alt="file_image" width="50" height="50"
+                                style="border-radius: 50%;"> ${data[i].upload}</td>
+                        <td>${data[i].description}</td>
+                        <td><button type="button" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom"
+                            title="Edit">
+                            <i class="las la-edit"></i>
+                        </button>
+                        <a href="{{document.upload.url}}" download="{{document.upload.url}}" class="btn btn-info"
+                            data-toggle="tooltip" data-placement="bottom" title="Download"><i
+                                class="las la-file-download"></i></a>
+                        <a href="#" class="btn btn-danger"
+                            onclick="return confirm('Are you sure want to delete this file?')" data-toggle="tooltip"
+                            data-placement="bottom" title="Delete"><i class="las la-trash-alt"></i></a>
+                        </td>
+                    
+                    </tr>
+                    `
+                    )
+                }
+
+            }
+        })
+    })
+</script>
 
 
 {% endblock %}

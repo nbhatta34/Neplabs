@@ -12,8 +12,8 @@ urlpatterns = [
     path('logout', views.logout_user),
     path('token', views.token_send, name="token_send"),
     path('verify/<auth_token>', views.verify, name="verify"),
-    path('documents', views.documents),
-    path('addDocuments', views.add_documents),
+   
+    path('addDocuments', views.add_documents, name='add_document'),
     path('reset_password/', auth_views.PasswordResetView.as_view(
         template_name="index/password_reset.html"), name="reset_password"),
     path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(
@@ -24,5 +24,5 @@ urlpatterns = [
         template_name="index/password_reset_done.html"), name="password_reset_complete"),
     path('distanceCalculator', views.vaccine_booking),
     path('distance_ajax', views.distance_ajax, name='distance_ajax'),
-    path('vaccineBooking', views.distance_calculator, name='create_post'),
+    path('delDocument',  views.delete_document, name='delete_document'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -146,6 +146,8 @@ STATICFILES_DIRS = [
     BASE_DIR /"static"
 ]
 
+LOGIN_URL = '/'
+
 AUTH_USER_MODEL = 'index.User'
 
 JET_THEMES = [
