@@ -1,0 +1,149 @@
+{% extends 'frontendLayout.html' %}
+{% block title %}
+<title>Neplabs</title>
+{% endblock%}
+
+{% block content %}
+{% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING%}
+            <h6 class="warning_message py-2 px-1 my-2 text-center bg-warning text-light rounded">{{message}}</h6>
+            {% endif %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS%}
+            <h6 class="success_message py-2 px-1 my-2 text-center bg-success text-light rounded">{{message}}</h6>
+            {% endif %}
+            {% endfor %}
+<div class="container-fluid mt-5 px-4">
+    <div class="row">
+        <div class="col-md-7">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-6 text-center mb-3">
+                        <h4 class="bg-secondary rounded p-3 text-light">Tests</h4>
+                    </div>
+                    <div class="col-sm-6 text-center mb-3">
+                        <h4 class="bg-secondary rounded p-3 text-light">Covid Tests</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                {% for test in tests %}
+                <div class="row mt-3 border border-secondary py-3 rounded">
+                    <div class="col-md-7 my-2">
+                        <h6 id="test-name{{test.id}}">{{test.test_name}}</h6>
+                    </div>
+                    <div class="col-md-3 my-2">
+                        <h6 id="test-price{{test.id}}">NRs. {{test.selling_price}}</h6>
+                    </div>
+                    <div class="col-md-2 my-2">
+                        <button class="btn test-btn" id="add-to-cart-{{test.id}}" onclick="addToCart('{{test.id}}')"><i
+                                class="fas fa-plus-circle"></i></button>
+                    </div>
+
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-5 my-3 border rounded" id="cart">
+            {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING%}
+            <h6 class="warning_message py-2 px-1 my-2 text-center bg-warning text-light rounded">{{message}}</h6>
+            {% endif %}
+            {% endfor %}
+            <div class="row" style="height: 100%;">
+                <div class="col" id="cart-name">
+                    <h3 class="p-2 mt-2 bg-info text-light rounded text-center">Your Cart</h3>
+                </div>
+                <div class="w-100"></div>
+                <div class="col mt-3" id="item-name">
+                    <table class="table" id="cart-items-table">
+                        <tbody>
+                            {% for item in cart_items %}
+                            <tr id="document-{{item.id}}">
+                                <td>{{item.test_name}}</td>
+                                <td>{{item.price}}</td>
+                                <td><i class="fas fa-trash-alt" style="color: red; font-size: 17px; cursor: pointer;"
+                                        onclick="delete_item('{{item.id}}')"></i></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="w-100"></div>
+                <div class="col" id="total-price">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h5>Total Price: </h5>
+                            <h5 id="price">NRs. {{total_price}}</h5>
+                        </div>
+                        <div class="col-sm-6">
+                            <a href="/checkout" class="btn btn-primary">Next</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function addToCart(test_id) {
+        test_name = '#test-name' + test_id;
+        var testname = document.querySelector(test_name).innerHTML;
+        test_price = '#test-price' + test_id;
+        var testprice = document.querySelector(test_price).innerHTML;
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "add_to_cart" %}',
+            data: {
+                test_name: testname,
+                test_price: testprice,
+                test_id: test_id
+            },
+
+            success: function (response) {
+                
+                data = response.data
+                total = response.total
+                document.querySelector('#price').textContent = "NRs. " + total
+                document.querySelector('#cart-item-quantity i').textContent = "(" + response.quantity + ")"
+                $('#cart-items-table tbody').empty()
+                
+
+                for (i = 0; i < data.length; i++) {
+                    $('#cart-items-table tbody').append(
+                    `
+                    <tr id="document-${data[i].id}">
+                        <td>${data[i].test_name}</td>
+                        <td>${data[i].price}</td>
+                        <td><i class="fas fa-trash-alt" style="color: red; font-size: 17px; cursor: pointer;"
+                            onclick="delete_item(${data[i].id})"></i></td>
+                    </tr>
+                    `
+                    )
+                }
+            }
+        })
+    }
+
+    function delete_item(item_id) {
+        var action = confirm("Are you sure want to delete this item?");
+        if (action != false) {
+            $.ajax({
+                type: 'GET',
+                url: '{% url "delete_cart_item" %}',
+                data: {
+                    item_id: item_id
+                },
+                dataType: 'json',
+                success: function (data) {
+                    document.querySelector('#price').textContent = "NRs. " + data.total_price
+                    document.querySelector('#cart-item-quantity i').textContent = "(" + data.cart_item_quantity + ")"
+                    if (data.deleted) {
+                        $("#cart-items-table #document-" + item_id).remove();
+                    }
+                }
+            })
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,266 @@
+{% extends 'frontendLayout.html' %}
+{% block title %}
+{% load bootstrap %}
+<title>Neplabs - Profile</title>
+{% endblock%}
+
+{% block content %}
+<div class="container">
+
+
+    <div class="row d-flex justify-content-around">
+
+        <div class="col-md-4 mt-5" id="profile-image">
+            <div class="row">
+                <div class="col d-flex justify-content-around" id="image-div">
+                    <div class="image-circle mt-4" id="img-wrapper">
+                        <img src="uploads/{{request.user.userprofile.profile_pic}}" alt="" id="profile-pic">
+                    </div>
+                </div>
+                <div class="container text-center">
+                    <button class="btn btn-secondary" id="update-profile-image"><i class="fas fa-camera"></i></button>
+                </div>
+                <div class="w-100">
+                </div>
+                <div class="col" id="info-div">
+                    <form>
+                        <div class="form-group mt-3">
+                            <i class="fas fa-signature"></i><label for="exampleInputEmail1" id="fname">
+                                {{request.user.userprofile.firstname}}</label>
+                        </div>
+                        <div class="form-group mt-3">
+                            <i class="fas fa-signature"></i><label for="exampleInputEmail1" id="lname">
+                                {{request.user.userprofile.lastname}}</label>
+                        </div>
+                        <div class="form-group mt-3">
+                            <i class="fas fa-envelope"></i><label for="exampleInputEmail1">
+                                {{request.user.userprofile.email}}</label>
+                        </div>
+                        <div class="form-group mt-3">
+                            <i class="fas fa-user"></i><label for="exampleInputPassword1">
+                                {{request.user.userprofile.username}}</label>
+                        </div>
+                        <div class="form-group mt-3">
+                            <i class="fas fa-mobile-alt"></i><label for="exampleInputPassword1" id="phone">
+                                {{request.user.userprofile.phone}}</label>
+                        </div>
+                        <div class="form-group mt-3">
+                            <i class="fas fa-venus-mars"></i><label for="exampleInputPassword1" id="gender">
+                                {{request.user.userprofile.gender}}</label>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mt-5" id="personal-info">
+            <div class="form-group mt-4">
+                <i class="fas fa-flag"></i><label for="exampleInputPassword1" id="nationality1">
+                    {{request.user.userprofile.nationality}}</label>
+            </div>
+            <div class="form-group mt-3">
+                <i class="fas fa-map-marker-alt"></i><label for="exampleInputPassword1" id="address1">
+                    {{request.user.userprofile.address}}</label>
+            </div>
+            <div class="form-group mt-3">
+                <i class="fas fa-birthday-cake"></i><label for="exampleInputPassword1" id="dob1">
+                    {{request.user.userprofile.dob}}</label>
+            </div>
+            <div class="form-group mt-3">
+                <label for="exampleInputPassword1"><i class="fas fa-id-badge"></i>
+                    {{request.user.userprofile.pit}}</label>
+            </div>
+        </div>
+        <div class="col-md-4 mt-5" id="contact-info">
+            <div class="form-group mt-3">
+                <h5 class="bg-secondary text-light p-2 rounded text-center">Test History</h5>
+                <table class="table">
+                    <tbody>
+                        {% for test in test_history %}
+                        <tr>
+                            <td>{{test.test_name}}</td>
+                            <td>{{test.upload_date}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <button id="edit-profile" class="btn btn-warning mt-3 mb-3"><i class="fas fa-pen-square"></i>Edit
+            Profile</button>
+    </div>
+</div>
+<div class="container-fluid" id="main-container-profile">
+    <div class="container" id="sub-container-profile">
+        <div id="close-profile">+</div>
+        <div class="row">
+            <div class="col-md-8 offset-md-2 py-4">
+                <div id="card-doc-profile">
+                    <form class="form" action="" id="doc-form-profile" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label for="">First Name</label>
+                                <input type="text" name="first_name" id="first_name" class="form-control"
+                                    placeholder="Enter First Name" value="{{request.user.userprofile.firstname}}">
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="">Last Name</label>
+                                <input type="text" name="last_name" id="last_name" class="form-control"
+                                    placeholder="Enter Last Name" value="{{request.user.userprofile.lastname}}">
+                            </div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="col-lg-6">
+                                <label for="">Age</label>
+                                <input type="text" name="age" id="age" class="form-control" placeholder="Enter Age"
+                                    value="{{request.user.userprofile.age}}">
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="">Nationality</label>
+                                <input type="text" name="nationality" id="nationality" class="form-control"
+                                    placeholder="Enter Nationality" value="{{request.user.userprofile.nationality}}">
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-lg-6">
+                                <label for="">Date of Birth</label>
+                                <input type="text" name="dob" id="dob" class="form-control" placeholder="Enter DOB"
+                                    value="{{request.user.userprofile.dob.isoformat}}">
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="">Address</label>
+                                <input type="text" name="address" id="address" class="form-control"
+                                    placeholder="Enter Address" value="{{request.user.userprofile.address}}">
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-lg-6">
+                                <label for="">Phone</label>
+                                <input type="text" name="phone" id="p" class="form-control" placeholder="Enter phone"
+                                    value="{{request.user.userprofile.phone}}">
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="">Gender</label>
+                                <input type="text" name="gender" id="g" class="form-control" placeholder="Enter gender"
+                                    value="{{request.user.userprofile.gender}}">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary mt-3" id="update-profile-button">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid" id="main-container-image">
+    <div class="container" id="sub-container-image">
+        <div id="close-image">+</div>
+        <div class="row">
+            <div class="col-md-8 offset-md-2 py-4">
+                <div id="card-doc-profile">
+                    <form class="form" action="" id="update-profile-form" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="file" name="profile_pic" id="profile_pic" class="form-control" required>
+                        <button type="submit" class="btn btn-primary mt-3" id="update-button">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    document.querySelector('#edit-profile').addEventListener('click', function () {
+        document.querySelector('#main-container-profile').style.display = 'flex'
+    })
+
+    document.querySelector('#close-profile').addEventListener('click', function () {
+        document.querySelector('#main-container-profile').style.display = 'none'
+    })
+
+    $(document).on('submit', '#doc-form-profile', function (e) {
+        e.preventDefault();
+        first_name = $('#first_name').val()
+        last_name = $('#last_name').val()
+        phone = $('#p').val()
+        gender = $('#g').val()
+        age = $('#age').val()
+        nationality = $('#nationality').val()
+        dob = $('#dob').val()
+        address = $('#address').val()
+        console.log(gender, phone, first_name, last_name, age, nationality, address)
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "edit_profile" %}',
+            data: {
+                first_name: first_name,
+                last_name: last_name,
+                phone: phone,
+                gender: gender,
+                age: age,
+                nationality: nationality,
+                dob: dob,
+                address: address,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken').val()
+            },
+
+            success: function (response) {
+                document.querySelector('#main-container-profile').style.display = 'none'
+                fname = response.fname
+                lname = response.lname
+                phone = response.phone
+                gender = response.gender
+                nationality = response.nationality
+                dob = response.dob
+                address = response.address
+                document.querySelector('#fname').textContent = fname
+                document.querySelector('#lname').textContent = lname
+                document.querySelector('#phone').textContent = phone
+                document.querySelector('#gender').textContent = gender
+                document.querySelector('#nationality1').textContent = nationality
+                document.querySelector('#address1').textContent = address
+                document.querySelector('#dob1').textContent = dob
+            }
+        })
+    })
+
+    document.querySelector('#update-profile-image').addEventListener('click', function () {
+        document.querySelector('#main-container-image').style.display = 'flex'
+    })
+
+    document.querySelector('#close-image').addEventListener('click', function () {
+        document.querySelector('#main-container-image').style.display = 'none'
+    })
+
+
+    $(document).on('submit', '#update-profile-form', function (e) {
+        e.preventDefault();
+        var fd = new FormData();
+        fd.append('profile_pic', $("input[id^='profile_pic']")[0].files[0]);
+        fd.append('csrfmidlewaretoken', $("input[name=csrfmiddlewaretoken]").val())
+
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "update_image" %}',
+            processData: false,
+            contentType: false,
+            data: fd,
+
+            success: function (response) {
+                document.querySelector('#main-container-image').style.display = 'none'
+                $("#profile_pic").val(null);
+                image = response.image
+                url = image[0].profile_pic
+                document.querySelector('#profile-pic').src = "uploads/" + url
+                document.querySelector('#nav-image').src = "uploads/" + url
+            }
+        })
+    })
+
+</script>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'frontendLayout.html' %}
+{% block title %}
+<title>Neplabs</title>
+{% endblock%}
+
+{% block content %}
+<div class="container mt-5" id="lab-result">
+    <table class="table table-bordered table-striped text-center" id="data_table">
+        <colgroup>
+            <col style="width: 75%" />
+            <col style="width: 10%" />
+            <col style="width: 15%" />
+        </colgroup>
+        <thead>
+            <th>Test Name</th>
+            <th>Price</th>
+            <th>Actions</th>
+        </thead>
+
+        <tbody>
+            {% for data in lab_result %}
+            <tr id="document-{{data.id}}">
+                <td>{{data.test_name}}</td>
+
+                <td>{{data.price}}</td>
+
+                <td>
+                    <a href="{{data.test_result.url}}" download="{{data.test_result.url}}" class="btn btn-info mb-1"
+                        data-toggle="tooltip" data-placement="bottom" title="Download"><i
+                            class="fas fa-download"></i></a>
+                    <button class="btn btn-danger mb-1" onclick="deleteUser('{{data.id}}')"><i class="fas fa-trash"></i></button>
+                    <a target="_blank" href="{{data.test_result.url}}" class="btn btn-success mb-1" id="view-image"><i
+                            class="fas fa-eye"></i></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+    document.querySelector('#view-image').addEventListener('click', function () {
+        document.querySelector('#main-container-lab-result').style.display = 'flex'
+    })
+
+    document.querySelector('#close-lab-result').addEventListener('click', function () {
+        document.querySelector('#main-container-lab-result').style.display = 'none'
+    })
+
+    function deleteUser(id) {
+        var action = confirm("Are you sure want to delete this file?");
+        if (action != false) {
+            $.ajax({
+                url: '{% url "delete_lab_result" %}',
+                data: {
+                    'id': id,
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if (data.deleted) {
+                        $("#data_table #document-" + id).remove();
+                    }
+                }
+            });
+        }
+    }
+</script>
+{% endblock %}

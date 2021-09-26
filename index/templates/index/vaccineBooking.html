@@ -2,37 +2,361 @@
 {% block title %}
 <title>Neplabs</title>
 {% endblock%}
-{% load bootstrap %}
+
 {% block content %}
-<html>
+<div class="container">
+    {% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING%}
+    <h6 class="warning_message py-2 px-1 my-2 text-center bg-danger text-light rounded">{{message}}</h6>
+    {% endif %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS%}
+    <h6 class="success_message py-2 px-1 my-2 text-center bg-success text-light rounded">{{message}}</h6>
+    {% endif %}
+    {% endfor %}
+    <h2 class="bg-warning rounded p-2 mt-5 text-light">Vaccine Booking</h2>
+    <h5 class="bg-info rounded p-2 text-light">Voluntary application form for the first dose of Covid-19 vaccine</h5>
+    <h5 class="bg-info rounded p-2 text-light">Note: All fileds are mandatory.</h5>
+    <form action="" method="POST" class="mt-5">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="formOne">
+        <div class="row  mt-3">
+            <div class="col-lg-5 first-name mt-3">
+                <input type="text" name="first_name" id="first_name" autocomplete="off" required>
+                <label for="firxt-name" class="label-name">
+                    <span class="content-name">First Name</span>
+                </label>
+            </div>
+            <div class="col-lg-5 first-name mt-3">
+                <input type="text" name="last_name" id="first_name" autocomplete="off" required>
+                <label for="firxt-name" class="label-name">
+                    <span class="content-name">Last Name</span>
+                </label>
+            </div>
+        </div>
+        <div class="row  mt-3">
+            <div class="col-lg-5 select-input mt-3">
+                
+                <select name="ethnicity" id="first_name" class="form-control">
+                    <option value="">--Select--</option>
+                    <option value="Brahmin/Chhetri">Brahmin/Chhetri</option>
+                    <option value="Dalit">Dalit</option>
+                    <option value="Janjati">Janjati</option>
+                    <option value="Madhesi">Madhesi</option>
+                    <option value="Muslim">Muslim</option>
+                    <option value="Others">Others</option>
+                </select>
+                <label for="first-name" class="select-label-name">
+                    <span class="select-name">Ethnicity</span>
+                </label>
+                <!-- <label for="firxt-name" class="label-name">
+                    <span class="content-name">Ethnicity</span>
+                </label> -->
+            </div>
+            <div class="col-lg-5 select-input mt-3">
+                <select name="gender" id="ethnicity" class="form-control">
+                    <option value="">--Select--</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Others">Others</option>
+                </select>
+                <label for="first-name" class="select-label-name">
+                    <span class="select-name">Gender</span>
+                </label>
+                <!-- <label for="firxt-name" class="label-name">
+                    <span class="content-name">Ethnicity</span>
+                </label> -->
+            </div>
+        </div>
+        <div class="row  mt-3">
+            <div class="col-lg-5 first-name mt-3">
+                <input type="text" name="dob" id="first_name" autocomplete="off" required>
+                <label for="firxt-name" class="label-name">
+                    <span class="content-name">Date of Birth in A.D. (e.g: 2000-09-04)</span>
+                </label>
+            </div>
+            <div class="col-lg-5 first-name mt-3">
+                <input type="text" name="age" id="first_name" autocomplete="off" required>
+                <label for="firxt-name" class="label-name">
+                    <span class="content-name">Age (In Years)</span>
+                </label>
+            </div>
+        </div>
+        <div class="row  mt-3">
+            <h5>Current Address</h5>
+            <hr style="width: 70%;">
+            <div class="col-lg-5 select-input mt-3">
+                <select name="province" id="ethnicity" class="form-control">
+                    <option value="">--Select--</option>
+                    <option value="Province 1">Province 1</option>
+                    <option value="Province 2">Province 2</option>
+                    <option value="Bagmati Province">Bagmati Province</option>
+                    <option value="Gandaki Province">Gandaki Province</option>
+                    <option value="Lumbini Province">Lumbini Province</option>
+                    <option value="Karnali Province">Karnali Province</option>
+                    <option value="Sudur Paschim Province">Sudur Paschim Province</option>
+                </select>
+                <label for="first-name" class="select-label-name">
+                    <span class="select-name">Province</span>
+                </label>
+                <!-- <label for="firxt-name" class="label-name">
+                    <span class="content-name">Province</span>
+                </label> -->
+            </div>
+            <div class="col-lg-5 first-name mt-3">
+                <input type="text" name="district" id="first_name" autocomplete="off" required>
+                <label for="firxt-name" class="label-name">
+                    <span class="content-name">District</span>
+                </label>
+            </div>
+        </div>
+        <div class="row  mt-3">
+            <div class="col-lg-5 first-name mt-3">
+                <input type="text" name="local" id="first_name" autocomplete="off" required>
+                <label for="firxt-name" class="label-name">
+                    <span class="content-name">Local Level Government</span>
+                </label>
+            </div>
+            <div class="col-lg-5 first-name mt-3">
+                <input type="text" name="ward_no" id="first_name" autocomplete="off" required>
+                <label for="firxt-name" class="label-name">
+                    <span class="content-name">Ward Number</span>
+                </label>
+            </div>
+        </div>
+        <div class="row  mt-3">
+            <h5>Identity Information</h5>
+            <hr style="width: 70%;">
+            <div class="col-lg-5 first-name mt-3">
+                <input type="text" name="nationality" id="first_name" autocomplete="off" required>
+                <label for="firxt-name" class="label-name">
+                    <span class="content-name">Nationality</span>
+                </label>
+            </div>
+            <div class="col-lg-5 select-input mt-3">
+                <select name="identity_type" id="ethnicity" class="form-control">
+                    <option value="">--Select--</option>
+                    <option value="Citizenship">Citizenship</option>
+                    <option value="National ID">National ID</option>
+                    <option value="Driving License">Driving License</option>
+                    <option value="Election Card">Election Card</option>
+                    <option value="Passport">Passport</option>
+                    <option value="isability Card">Disability Card</option>
+                    <option value="Others">Others</option>
+                </select>
+                <label for="first-name" class="select-label-name">
+                    <span class="select-name">Identity Type</span>
+                </label>
+            </div>
+        </div>
+        <div class="row  mt-3">
+            <div class="col-lg-5 first-name mt-3">
+                <input type="text" name="id_no" id="first_name" autocomplete="off" required>
+                <label for="firxt-name" class="label-name">
+                    <span class="content-name">ID Number</span>
+                </label>
+            </div>
+            <div class="col-lg-5 first-name mt-3">
+                <input type="text" name="issue_office" id="first_name" autocomplete="off" required>
+                <label for="firxt-name" class="label-name">
+                    <span class="content-name">Issue Office</span>
+                </label>
+            </div>
+        </div>
+        <div class="row  mt-3">
+            <div class="col-lg-5 select-input mt-3">
+                <select name="occupation" id="ethnicity" class="form-control">
+                    <option value="">--Select--</option>
+                    <option value="Foreign Employment">Foreign Employment</option>
+                    <option value="Airlines / Agent">Airlines / Agent</option>
+                    <option value="Army">Army</option>
+                    <option value="Bank / Finance">Bank / Finance</option>
+                    <option value="Commercial facilities(Wholesale, Retail, Business, Entertainment)">Commercial facilities(Wholesale, Retail, Business, Entertainment)</option>
+                    <option value="Daily Wages worker">Daily Wages worker</option>
+                    <option value="Diplomat">Diplomat</option>
+                    <option value="Farmer / Food and Agriculture">Farmer / Food and Agriculture</option>
+                    <option value="Government Employee">Government Employee</option>
+                    <option value="Grocery Store">Grocery Store</option>
+                    <option value="Health Care Provider, Medical, Pharmacy etc">Health Care Provider, Medical, Pharmacy etc</option>
+                    <option value="Health Professional">Health Professional</option>
+                    <option value="IT and Communication">IT and Communication</option>
+                    <option value="Journalist / Media">Journalist / Media</option>
+                    <option value="Manufacturing">Manufacturing</option>
+                    <option value="NGO/INGO Employee">NGO/INGO Employee</option>
+                    <option value="Online Business / Delivery">Online Business / Delivery</option>
+                    <option value="Police">Police</option>
+                    <option value="Security person">Security person</option>
+                    <option value="Social Service">Social Service</option>
+                    <option value="Student">Student</option>
+                    <option value="Teacher / Professor">Teacher / Professor</option>
+                    <option value="Tourism Industry">Tourism Industry</option>
+                    <option value="Transport Sector / Logistic">Transport Sector / Logistic</option>
+                    <option value="Unemployed">Unemployed</option>
+                    <option value="Veterinarians / Veterinary Professionals">Veterinarians / Veterinary Professionals</option>
+                    <option value="Others">Others</option>
+                    
+                </select>
+                <label for="first-name" class="select-label-name">
+                    <span class="select-name">Occupation</span>
+                </label>
+            </div>
+            <div class="col-lg-5 first-name mt-3">
+                <input type="text" name="mobile" id="first_name" autocomplete="off" required>
+                <label for="firxt-name" class="label-name">
+                    <span class="content-name">Mobile Number</span>
+                </label>
+            </div>
+        </div>
+        <div class="medical-condition  mt-3 mb-5">
+            <h5>Select Medical Condition</h5>
+            <hr style="width: 70%;">
+            <div class="form-check mt-3">
+                <input class="form-check-input chkvalues" type="checkbox" value="Normal Health Condition" id="1">
+                <label class="form-check-label" for="1">
+                    Normal Health Condition
+                </label>
+            </div>
+            <div class="form-check mt-3">
+                <input class="form-check-input chkvalues" type="checkbox" value="Blood Pressure (High/ Low)" id="3">
+                <label class="form-check-label" for="3">
+                    Blood Pressure (High/ Low)
+                </label>
+            </div>
+            <div class="form-check mt-3">
+                <input class="form-check-input chkvalues" type="checkbox" value="Cancer" id="2">
+                <label class="form-check-label" for="2">
+                    Cancer
+                </label>
+            </div>
+            <div class="form-check mt-3">
+                <input class="form-check-input chkvalues" type="checkbox" value="Chronic kidney disease" id="4">
+                <label class="form-check-label" for="4">
+                    Chronic kidney disease
+                </label>
+            </div>
+            <div class="form-check mt-3">
+                <input class="form-check-input chkvalues" type="checkbox"
+                    value="Chronic respiratory diseases / Lung Diseases" id="5">
+                <label class="form-check-label" for="5">
+                    Chronic respiratory diseases / Lung Diseases
+                </label>
+            </div>
+            <div class="form-check mt-3">
+                <input class="form-check-input chkvalues" type="checkbox" value="Cardio related disease" id="6">
+                <label class="form-check-label" for="6">
+                    Cardio related disease
+                </label>
+            </div>
+            <div class="form-check mt-3">
+                <input class="form-check-input chkvalues" type="checkbox" value="Diabetes" id="7">
+                <label class="form-check-label" for="7">
+                    Diabetes
+                </label>
+            </div>
+            <div class="form-check mt-3">
+                <input class="form-check-input chkvalues" type="checkbox" value="Neuro related diseases" id="8">
+                <label class="form-check-label" for="8">
+                    Neuro related diseases
+                </label>
+            </div>
+            <div class="form-check mt-3">
+                <input class="form-check-input chkvalues" type="checkbox" value="Tuberculosis (TB)" id="9">
+                <label class="form-check-label" for="9">
+                    Tuberculosis (TB)
+                </label>
+            </div>
+            <div class="form-check mt-3">
+                <input class="form-check-input chkvalues" type="checkbox" value="Mental Disease" id="10">
+                <label class="form-check-label" for="10">
+                    Mental Disease
+                </label>
+            </div>
+            <div class="form-check mt-3">
+                <input class="form-check-input chkvalues" type="checkbox" value="HIV / AIDS" id="11">
+                <label class="form-check-label" for="11">
+                    HIV / AIDS
+                </label>
+            </div>
+            <div class="form-check mt-3">
+                <input class="form-check-input chkvalues" type="checkbox" value="Already Covid-19 infected" id="12">
+                <label class="form-check-label" for="12">
+                    Already Covid-19 infected
+                </label>
+            </div>
+            <div class="form-check mt-3">
+                <input class="form-check-input chkvalues" type="checkbox" value="Other" id="13">
+                <label class="form-check-label" for="13">
+                    Other
+                </label>
+            </div>
+            <input type="text" name="checkbox_value" id="txtvalues" style="display: none;">
 
-<head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-</head>
-
-<body>
-    <div id="wrapper">
-        <button id="location-button" class="btn btn-primary my-5 mx-5">Get User Location</button>
-        <h5 id="latitude" style="font-weight: 300;" class="text-center"></h5>
-        <h5 id="longitude" style="font-weight: 300;" class="text-center"></h5>
-    </div>
-    <script>
-        $('#location-button').click(function () {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    var latitude = position.coords.latitude
-                    var longitude = position.coords.longitude
-                    console.log(latitude);
-                    console.log(longitude);
-                    $('#latitude').html(latitude);
-                    $('#longitude').html(longitude);
-
-                });
-            }
+        </div>
+        <div class="vaccination-center">
+            <h5>Select Vaccination Center</h5>
+            <hr style="width: 70%;">
+            <div class="row">
+                <div class="col-lg-5 select-input">
+                    <select name="vaccination_center" id="vaccination" class="form-control">
+                        <option value="">--Select--</option>
+                        {% for center in vaccination_center %}
+                        <option value="">{{center}}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="first-name" class="select-label-name">
+                        <span class="select-name">Vaccination Center</span>
+                    </label>
+                </div>
+                <p class="mt-3">Note: After submitting the form, the registered person is requested to come to the
+                    vaccination center
+                    during the vaccination campaign with the registration card or registration number along with the
+                    identity card that verifies the identity of the person.</p>
+            </div>
+        </div>
+        <div class="form-check mt-3">
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" required>
+            <label class="form-check-label text-danger" for="flexCheckChecked">
+                All the above mentioned details are correct.
+            </label>
+        </div>
+        <button class="btn btn-primary mt-3 mb-5" type="submit">Submit Form</button>
+    </form>
+</div>
+<script>
+    $(document).ready(function () {
+        $('.chkvalues').click(function () {
+            var txt = "";
+            $('.chkvalues:checked').each(function () {
+                txt += $(this).val() + ","
+            });
+            $('#txtvalues').val(txt);
         });
-    </script>
-</body>
+    });
 
-</html>
+    jQuery(document).ready(function ($) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var latitude = position.coords.latitude
+            var longitude = position.coords.longitude
+            $.ajax({
+                data: {
+                    latitude: latitude,
+                    longitude: longitude,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken').val()
+                },
+                type: "POST",
+                url: '{% url "vaccine_booking" %}',
+                success: function (response) {
+                    dist = response.data
+                    address = response.data1
+                    len = dist.length
+                    for (i = 0; i < len; i++) {
+                        $('#vaccination').append(`<option value="${address[i]}">
+                            ${address[i]}
+                       </option>`);
+                    }
+                }
+            })
+        })
+
+    });
+</script>
 {% endblock %}

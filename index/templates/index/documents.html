@@ -57,7 +57,7 @@
                         {% csrf_token %}
                         <div class="form-group">
                             <label for="document_type">Document Type</label>
-                            <select name="document_type" id="document_type" class="form-select">
+                            <select name="document_type" id="document_type" class="form-select" required>
                                 <option>Choose..</option>
                                 <option>Lab Result</option>
                                 <option>Prescription</option>
@@ -66,12 +66,12 @@
                         </div>
                         <div class="form-group mt-3">
                             <label for="file">Upload</label>
-                            <input type="file" class="form-control" id="file" name="file" aria-describedby="upload">
+                            <input type="file" class="form-control" id="file" name="file" aria-describedby="upload" required>
                         </div>
                         <div class="form-group mt-3">
                             <label for="title">Description</label>
                             <textarea type="text" class="form-control" id="description" name="description"
-                                aria-describedby="description" placeholder="Enter description"></textarea>
+                                aria-describedby="description" placeholder="Enter description" required></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary mt-3">Save</button>
                     </form>
@@ -88,6 +88,63 @@
 
     document.querySelector('#close').addEventListener('click', function () {
         document.querySelector('#main-container').style.display = 'none'
+    })
+
+
+
+    $(document).on('submit', '#doc-form', function (e) {
+        e.preventDefault();
+        document_type = $('#document_type').val()
+        description = $('#description').val()
+        var fd = new FormData();
+        fd.append('file', $("input[id^='file']")[0].files[0]);
+        fd.append('document_type', document_type)
+        fd.append('description', description)
+        fd.append('csrfmidlewaretoken', $("input[name=csrfmiddlewaretoken]").val())
+
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "add_document" %}',
+            processData: false,
+            contentType: false,
+            data: fd,
+
+            success: function (response) {
+                document.querySelector('#main-container').style.display = 'none'
+                $('#description').val('');
+                $('#document_type').prop('selectedIndex', 0);
+                $("#file").val(null);
+                data = response.data
+                console.log(data[0].id)
+                $('#doc-table tbody').empty()
+                for (i = 0; i < data.length; i++) {
+                    $('#doc-table tbody').append(
+                        `
+                    <tr id="document-${data[i].id}">
+                        <td>${data[i].document_type}</td>
+                        <td> <img src="uploads/${data[i].upload}" alt="file_image" width="50" height="50"
+                                style="border-radius: 50%;"> ${data[i].upload}</td>
+                        <td>${data[i].description}</td>
+                        <td><button type="button" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom"
+                            title="Edit">
+                            <i class="las la-edit"></i>
+                        </button>
+                        <a href="/uploads/${data[i].upload}" download="/uploads/${data[i].upload}" class="btn btn-info"
+                            data-toggle="tooltip" data-placement="bottom" title="Download"><i
+                                class="las la-file-download"></i></a>
+                        <button class="btn btn-danger" id="delete" onClick="deleteUser(${data[i].id})"
+                                data-toggle="tooltip" data-placement="bottom" title="Delete"><i
+                                    class="las la-trash-alt"></i></button>
+                        </td>
+                    
+                    </tr>
+                    `
+                    )
+                }
+
+            }
+        })
     })
 
     function deleteUser(id) {
@@ -107,64 +164,6 @@
             });
         }
     }
-
-    $(document).on('submit', '#doc-form', function (e) {
-        e.preventDefault();
-        document_type = $('#document_type').val()
-        description = $('#description').val()
-        var fd = new FormData();
-        fd.append('file', $("input[id^='file']")[0].files[0]);
-        fd.append('document_type', document_type)
-        fd.append('description', description)
-        fd.append('csrfmidlewaretoken', $("input[name=csrfmiddlewaretoken]").val())
-        for (var key of fd.entries()) {
-            console.log(key[0] + ', ' + key[1]);
-        }
-
-
-        $.ajax({
-            type: 'POST',
-            url: '{% url "add_document" %}',
-            processData: false,
-            contentType: false,
-            data: fd,
-
-            success: function (response) {
-                document.querySelector('#main-container').style.display = 'none'
-                $('#description').val('');
-                $('#document_type').prop('selectedIndex', 0);
-                $("#file").val(null);
-                data = response.data
-                console.log(data)
-                $('#doc-table tbody').empty()
-                for (i = 0; i < data.length; i++) {
-                    $('#doc-table tbody').append(
-                        `
-                    <tr>
-                        <td>${data[i].document_type}</td>
-                        <td> <img src="uploads/${data[i].upload}" alt="file_image" width="50" height="50"
-                                style="border-radius: 50%;"> ${data[i].upload}</td>
-                        <td>${data[i].description}</td>
-                        <td><button type="button" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom"
-                            title="Edit">
-                            <i class="las la-edit"></i>
-                        </button>
-                        <a href="{{document.upload.url}}" download="{{document.upload.url}}" class="btn btn-info"
-                            data-toggle="tooltip" data-placement="bottom" title="Download"><i
-                                class="las la-file-download"></i></a>
-                        <a href="#" class="btn btn-danger"
-                            onclick="return confirm('Are you sure want to delete this file?')" data-toggle="tooltip"
-                            data-placement="bottom" title="Delete"><i class="las la-trash-alt"></i></a>
-                        </td>
-                    
-                    </tr>
-                    `
-                    )
-                }
-
-            }
-        })
-    })
 </script>
 
 

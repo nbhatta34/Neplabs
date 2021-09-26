@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from . import models
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from . forms import UserAdminChangeForm, UserAdminCreationForm
-from .models import Search
+from .models import Cart, Hospital, LabResult, Order, ProductInCart, Test, UserProfile, VaccineBooking
 # Register your models here.
 # admin.site.site_header = "Neplabs Admin Portal"
 
@@ -23,4 +23,15 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.register(User, UserAdmin)
 
-admin.site.register(Search)
+admin.site.register(Hospital)
+
+admin.site.register(Test)
+
+admin.site.register(LabResult)
+
+admin.site.register(UserProfile)
+
+admin.site.register(Order)
+admin.site.register(Cart)
+admin.site.register(ProductInCart)
+admin.site.register(VaccineBooking)
